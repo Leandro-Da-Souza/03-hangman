@@ -1,5 +1,4 @@
 // Globala variabler
-
 let gameIsOn = false;
 
 const wordList = [
@@ -7,7 +6,7 @@ const wordList = [
     'Neurosis',
     'Swans',
     'King Gizzard',
-    'Sunn 0)))',
+    'Boris',
     'Tool',
     'Radiohead',
     'The Mars Volta',
@@ -25,7 +24,7 @@ let msgHolderEl = document.querySelector('#message'); // DOM-nod: Ger meddelande
 let startGameBtnEl = document.querySelector('#startGameBtn'); // DOM-nod: knappen som du startar spelet med
 
 let letterButtonEls = Array.from(
-    document.querySelectorAll('#letterButtons > li')
+    document.querySelectorAll('#letterButtons > li > button')
 ); // Array av DOM-noder: Knapparna för bokstäverna
 
 let letterBoxEls = document.querySelector('#letterBoxes > ul'); // Array av DOM-noder: Rutorna där bokstäverna ska stå
@@ -40,6 +39,8 @@ function startGame() {
 
     let randomWord = randomWordGen();
     createLetterBoxEls(randomWord);
+
+    guessLetters(randomWord);
 }
 
 // Funktion som slumpar fram ett ord
@@ -49,7 +50,6 @@ function randomWordGen() {
 }
 // Funktion som tar fram bokstävernas rutor, antal rutor beror på vilket ord slumptas fram
 function createLetterBoxEls(letters) {
-    console.log(letters);
     letterBoxEls.innerHTML = '';
     letters.forEach(letter => {
         let output = document.createElement('li');
@@ -70,5 +70,34 @@ function createLetterBoxEls(letters) {
     });
 }
 // Funktion som körs när du trycker på bokstäverna och gissar bokstav
+function guessLetters(word) {
+    letterButtonEls.forEach(letterBtn => {
+        if (letterBtn.hasAttribute('disabled')) {
+            letterBtn.removeAttribute('disabled');
+        }
+
+        letterBtn.addEventListener('click', e => {
+            let btnVal = e.path[0].value;
+            let regex = new RegExp(word.join('|'), 'i');
+            console.log(word);
+            if (regex.test(btnVal)) {
+                console.log('guess right');
+            } else {
+                console.log('guess wrong');
+                guesses++;
+                hangmanImg.src = `../images/h${guesses}.png`;
+                if (guesses === 6) {
+                    gameOver('lose');
+                }
+                console.log(guesses);
+            }
+        });
+    });
+}
 // Funktion som ropas vid vinst eller förlust, gör olika saker beroende tillståndet
+function gameOver(state) {
+    if (state === 'lose') {
+        console.log('YOU LOSE');
+    }
+}
 // Funktion som inaktiverar/aktiverar bokstavsknapparna beroende på vilken del av spelet du är på

@@ -33,6 +33,7 @@ let letterBoxEls = document.querySelector('#letterBoxes > ul'); // Array av DOM-
 startGameBtnEl.addEventListener('click', startGame);
 function startGame() {
     gameIsOn = true;
+
     if (gameIsOn) {
         startGameBtnEl.removeEventListener('click', startGame);
     }
@@ -80,8 +81,12 @@ function guessLetters(word) {
             let btnVal = e.path[0].value;
             let regex = new RegExp(word.join('|'), 'i');
             console.log(word);
+
             if (regex.test(btnVal)) {
                 console.log('guess right');
+                let inputs = Array.from(
+                    document.querySelectorAll('#letterBoxes > ul > li > input ')
+                );
             } else {
                 console.log('guess wrong');
                 guesses++;
@@ -98,6 +103,11 @@ function guessLetters(word) {
 function gameOver(state) {
     if (state === 'lose') {
         console.log('YOU LOSE');
+        letterButtonEls.forEach(letterBtn => {
+            letterBtn.setAttribute('disabled', true);
+        });
+        gameIsOn = false;
+        startGameBtnEl.addEventListener('click', startGame);
     }
 }
 // Funktion som inaktiverar/aktiverar bokstavsknapparna beroende på vilken del av spelet du är på
